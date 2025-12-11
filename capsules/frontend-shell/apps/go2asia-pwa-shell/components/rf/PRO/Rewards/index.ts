@@ -1,0 +1,2 @@
+export { RewardsView } from './RewardsView';
+

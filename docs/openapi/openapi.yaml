@@ -1,0 +1,94 @@
+openapi: 3.1.0
+
+info:
+  title: Go2Asia Platform API
+  description: >
+    Unified API specification for all Go2Asia backend microservices.
+    This file defines the global schema and shared components.
+    Each microservice extends this file via modular OpenAPI fragments.
+  version: 0.1.0
+  contact:
+    name: Go2Asia Dev Team
+    email: fred8909599296@gmail.com
+
+servers:
+  - url: https://api.go2asia.space
+    description: Production API Gateway
+  - url: https://staging.api.go2asia.space
+    description: Staging Environment
+
+paths: {}
+  # Paths will be added by each backend service module:
+  # - Auth Service
+  # - User Service
+  # - Content Service
+  # - Atlas Service
+  # - Pulse Service
+  # - Media Service
+  # - Referral Service
+  # - Tokenomics Service
+  # - Gateway Routes
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Unauthorized"
+        message:
+          type: string
+          example: "Invalid or missing token"
+
+tags:
+  - name: auth
+    description: User authentication & session management
+  - name: users
+    description: User profiles and account data
+  - name: content
+    description: Posts, reactions, media metadata
+  - name: atlas
+    description: Countries, cities, places, guides
+  - name: pulse
+    description: Events, schedules and calendars
+  - name: referral
+    description: Referral system and invite tracking
+  - name: tokenomics
+    description: Points, G2A token and NFT logic
+
+x-microservices:
+  auth:
+    service: auth-service
+    repo: services/auth
+  user:
+    service: user-service
+    repo: services/user
+  content:
+    service: content-service
+    repo: services/content
+  atlas:
+    service: atlas-service
+    repo: services/atlas
+  pulse:
+    service: pulse-service
+    repo: services/pulse
+  referral:
+    service: referral-service
+    repo: services/referral
+  tokenomics:
+    service: tokenomics-service
+    repo: services/tokenomics
+
+x-notes:
+  - This file is the primary API contract for the entire Go2Asia platform.
+  - Microservices should extend this file via modular OpenAPI fragments.
+  - Typescript types and SDK are generated from this file (OpenAPI-first).

@@ -1,0 +1,291 @@
+{
+  "meta": {
+    "name": "Go2Asia Design System Tokens",
+    "version": "1.0.0",
+    "description": "Complete design tokens for Go2Asia PWA ecosystem"
+  },
+  "colors": {
+    "brand": {
+      "primary": "#0EA5E9",
+      "primaryHover": "#0284C7",
+      "primaryLight": "#7DD3FC",
+      "primaryLighter": "#E0F2FE"
+    },
+    "text": {
+      "primary": "#0F172A",
+      "secondary": "#475569",
+      "tertiary": "#94A3B8",
+      "inverse": "#FFFFFF"
+    },
+    "border": {
+      "default": "#E2E8F0",
+      "hover": "#0EA5E9"
+    },
+    "background": {
+      "default": "#F8FAFC",
+      "white": "#FFFFFF"
+    },
+    "modules": {
+      "atlas": {
+        "from": "#0EA5E9",
+        "to": "#0284C7"
+      },
+      "pulse": {
+        "from": "#0EA5E9",
+        "to": "#0284C7"
+      },
+      "blog": {
+        "from": "#0EA5E9",
+        "to": "#0284C7"
+      },
+      "guru": {
+        "from": "#0EA5E9",
+        "to": "#0284C7"
+      },
+      "space": {
+        "from": "#0EA5E9",
+        "to": "#0284C7"
+      },
+      "rielt": {
+        "from": "#10B981",
+        "to": "#059669"
+      },
+      "quest": {
+        "from": "#8B5CF6",
+        "to": "#7C3AED"
+      },
+      "rf": {
+        "from": "#3B82F6",
+        "to": "#2563EB"
+      },
+      "connect": {
+        "from": "#F59E0B",
+        "to": "#D97706"
+      },
+      "partner": {
+        "from": "#F97316",
+        "to": "#EA580C"
+      }
+    },
+    "system": {
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "error": "#EF4444",
+      "info": "#3B82F6"
+    },
+    "overlay": {
+      "white10": "rgba(255, 255, 255, 0.1)",
+      "white15": "rgba(255, 255, 255, 0.15)",
+      "white20": "rgba(255, 255, 255, 0.2)",
+      "white25": "rgba(255, 255, 255, 0.25)",
+      "white90": "rgba(255, 255, 255, 0.9)",
+      "black50": "rgba(0, 0, 0, 0.5)"
+    },
+    "features": {
+      "community": {
+        "background": "linear-gradient(to bottom right, #EFF6FF, #ECFEFF)",
+        "border": "#BFDBFE",
+        "text": "#2563EB"
+      },
+      "teams": {
+        "background": "linear-gradient(to bottom right, #FAF5FF, #FDF2F8)",
+        "border": "#E9D5FF",
+        "text": "#9333EA"
+      },
+      "rf": {
+        "background": "linear-gradient(to bottom right, #ECFDF5, #F0FDFA)",
+        "border": "#A7F3D0",
+        "text": "#059669"
+      },
+      "referral": {
+        "background": "linear-gradient(to bottom right, #FFFBEB, #FFEDD5)",
+        "border": "#FED7AA",
+        "text": "#D97706"
+      },
+      "rewards": {
+        "background": "linear-gradient(to bottom right, #EEF2FF, #DBEAFE)",
+        "border": "#C7D2FE",
+        "text": "#4F46E5"
+      },
+      "quests": {
+        "background": "linear-gradient(to bottom right, #FFF1F2, #FCE7F3)",
+        "border": "#FECDD3",
+        "text": "#E11D48"
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+    },
+    "fontSize": {
+      "h1": {
+        "mobile": "1.875rem",
+        "tablet": "2.25rem",
+        "desktop": "3rem"
+      },
+      "h2": {
+        "mobile": "1.5rem",
+        "desktop": "1.875rem"
+      },
+      "h3": {
+        "mobile": "1.25rem",
+        "desktop": "1.5rem"
+      },
+      "h4": {
+        "mobile": "1.125rem",
+        "desktop": "1.25rem"
+      },
+      "large": {
+        "mobile": "1.125rem",
+        "desktop": "1.25rem"
+      },
+      "base": {
+        "mobile": "0.875rem",
+        "desktop": "1rem"
+      },
+      "small": {
+        "mobile": "0.75rem",
+        "desktop": "0.875rem"
+      },
+      "tiny": "0.75rem"
+    },
+    "fontWeight": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "lineHeight": {
+      "heading": 1.2,
+      "body": 1.5,
+      "relaxed": 1.75
+    }
+  },
+  "spacing": {
+    "section": {
+      "mobile": "2rem",
+      "desktop": "3rem"
+    },
+    "header": {
+      "mobile": "1rem",
+      "desktop": "1.5rem"
+    },
+    "element": {
+      "mobile": "0.5rem",
+      "desktop": "0.75rem"
+    },
+    "gap": {
+      "small": "0.5rem",
+      "medium": "0.75rem",
+      "mediumDesktop": "1rem",
+      "large": "1rem",
+      "largeDesktop": "1.5rem"
+    },
+    "container": {
+      "padding": {
+        "mobile": "1rem",
+        "tablet": "1.5rem"
+      }
+    }
+  },
+  "borderRadius": {
+    "small": "0.5rem",
+    "medium": "0.75rem",
+    "large": "1rem",
+    "xlarge": "1.5rem",
+    "full": "9999px"
+  },
+  "shadows": {
+    "card": "0 1px 2px rgba(15, 23, 42, 0.05)",
+    "cardHover": "0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)",
+    "lift": "0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)",
+    "xlHover": "0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04)"
+  },
+  "transitions": {
+    "duration": {
+      "default": "200ms",
+      "medium": "250ms",
+      "slow": "350ms"
+    },
+    "timing": "cubic-bezier(0.4, 0, 0.2, 1)"
+  },
+  "zIndex": {
+    "appbar": 50,
+    "modal": 50,
+    "dropdown": 40,
+    "overlay": 30,
+    "base": 1
+  },
+  "breakpoints": {
+    "mobile": "< 768px",
+    "tablet": "768px",
+    "desktop": "1024px",
+    "wide": "1280px"
+  },
+  "layout": {
+    "appBar": {
+      "height": "4rem",
+      "heightPx": "64px"
+    },
+    "bottomNav": {
+      "height": "4rem",
+      "heightPx": "64px"
+    },
+    "container": {
+      "maxWidth": "80rem",
+      "maxWidthPx": "1280px"
+    },
+    "mainContent": {
+      "paddingTop": "4rem",
+      "paddingBottom": "5rem"
+    }
+  },
+  "buttons": {
+    "sizes": {
+      "small": {
+        "paddingX": "0.75rem",
+        "paddingY": "0.375rem",
+        "fontSize": "0.75rem"
+      },
+      "medium": {
+        "paddingX": "1rem",
+        "paddingY": "0.5rem",
+        "fontSize": "0.875rem"
+      },
+      "large": {
+        "paddingX": "1.5rem",
+        "paddingY": "0.75rem",
+        "fontSize": "1rem"
+      },
+      "xlarge": {
+        "paddingX": "2rem",
+        "paddingY": "1rem",
+        "fontSize": "1.125rem"
+      }
+    }
+  },
+  "icons": {
+    "sizes": {
+      "small": 16,
+      "medium": 20,
+      "large": 24,
+      "xlarge": 28
+    }
+  },
+  "backdropBlur": {
+    "small": "4px",
+    "medium": "8px",
+    "large": "12px"
+  },
+  "opacity": {
+    "10": 0.1,
+    "15": 0.15,
+    "20": 0.2,
+    "25": 0.25,
+    "80": 0.8,
+    "85": 0.85,
+    "90": 0.9,
+    "95": 0.95
+  }
+}

@@ -1,0 +1,2 @@
+export { PartnersListView } from './PartnersListView';
+

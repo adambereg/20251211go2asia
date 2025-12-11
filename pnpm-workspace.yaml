@@ -1,0 +1,24 @@
+packages:
+  # FRONTEND APPS
+  - "apps/*"
+
+  # BACKEND SERVICES (Cloudflare Workers)
+  - "services/*"
+
+  # SHARED PACKAGES (UI kit, SDK, Types, Config, Utils)
+  - "packages/*"
+
+  # DOCUMENTATION (можно редактировать Cursor)
+  - "docs"
+
+  # DESIGN SYSTEM (read-only, но должна быть в workspace для import resolution)
+  - "design-system"
+
+  # SCRIPTS (если будут утилитарные Node-скрипты)
+  - "scripts"
+
+  # E2E TESTS (например, Playwright / Cypress)
+  - "tests"
+
+  # ИЗОЛИРОВАННЫЕ ПРОТОТИПЫ Bolt.New (read-only)
+  - "prototypes"

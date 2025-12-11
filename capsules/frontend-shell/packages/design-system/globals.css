@@ -1,0 +1,403 @@
+/* ========================================
+   Go2Asia Design System - Global Styles
+   ======================================== */
+
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   BASE LAYER - Базовые стили
+   ======================================== */
+
+@layer base {
+  /* Antialiasing для всех элементов */
+  * {
+    @apply antialiased;
+  }
+
+  /* Body */
+  body {
+    @apply font-sans text-slate-900 bg-slate-50;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  /* Заголовки */
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl font-bold text-slate-900;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-bold text-slate-900;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl font-bold text-slate-900;
+  }
+
+  h5 {
+    @apply text-base md:text-lg font-bold text-slate-900;
+  }
+
+  h6 {
+    @apply text-sm md:text-base font-bold text-slate-900;
+  }
+
+  /* Параграфы */
+  p {
+    @apply text-sm md:text-base text-slate-600 leading-relaxed;
+  }
+
+  /* Ссылки */
+  a {
+    @apply text-sky-600 hover:text-sky-700 transition-colors;
+  }
+
+  /* Кнопки - сброс стилей */
+  button {
+    @apply font-medium;
+  }
+
+  /* Input - сброс стилей */
+  input,
+  textarea,
+  select {
+    @apply font-sans;
+  }
+}
+
+/* ========================================
+   COMPONENTS LAYER - Переиспользуемые компоненты
+   ======================================== */
+
+@layer components {
+  /* ========== BUTTONS ========== */
+
+  .btn-primary {
+    @apply px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-medium transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur text-white rounded-lg font-medium transition-colors;
+  }
+
+  .btn-icon {
+    @apply p-2 text-slate-600 hover:text-sky-600 hover:bg-slate-50 rounded-lg transition-all;
+  }
+
+  /* Размеры кнопок */
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .btn-md {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  .btn-xl {
+    @apply px-8 py-4 text-lg;
+  }
+
+  /* ========== CARDS ========== */
+
+  .card-base {
+    @apply bg-white rounded-xl border-2 border-slate-200 p-4 hover:shadow-lg hover:border-sky-300 hover:-translate-y-0.5 transition-all;
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br text-white rounded-xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-200;
+  }
+
+  /* Градиенты для модулей */
+  .card-gradient-atlas {
+    @apply from-sky-500 to-sky-600;
+  }
+
+  .card-gradient-pulse {
+    @apply from-sky-500 to-sky-600;
+  }
+
+  .card-gradient-blog {
+    @apply from-sky-500 to-sky-600;
+  }
+
+  .card-gradient-guru {
+    @apply from-sky-500 to-sky-600;
+  }
+
+  .card-gradient-space {
+    @apply from-sky-500 to-sky-600;
+  }
+
+  .card-gradient-rielt {
+    @apply from-emerald-500 to-emerald-600;
+  }
+
+  .card-gradient-quest {
+    @apply from-purple-500 to-purple-600;
+  }
+
+  .card-gradient-rf {
+    @apply from-blue-500 to-blue-600;
+  }
+
+  .card-gradient-connect {
+    @apply from-amber-500 to-amber-600;
+  }
+
+  .card-gradient-partner {
+    @apply from-orange-500 to-orange-600;
+  }
+
+  /* ========== BADGES ========== */
+
+  .badge-lock {
+    @apply absolute top-2 right-2 bg-white/20 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-medium;
+  }
+
+  .badge-pro {
+    @apply absolute top-2 right-2 bg-purple-500 px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold;
+  }
+
+  .badge-rf {
+    @apply px-1.5 py-0.5 bg-green-600 text-white rounded text-xs font-bold shadow-lg;
+  }
+
+  .badge-rf-full {
+    @apply px-3 py-1.5 bg-emerald-500 text-white rounded-lg font-semibold text-sm flex items-center gap-1.5;
+  }
+
+  /* ========== MODULE TILE ========== */
+
+  .module-tile {
+    @apply bg-gradient-to-br text-white rounded-xl p-4 md:p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full h-full flex flex-col relative;
+  }
+
+  .module-icon {
+    @apply mb-2 md:mb-3;
+  }
+
+  .module-title {
+    @apply font-bold text-base md:text-lg mb-1;
+  }
+
+  .module-description {
+    @apply text-xs md:text-sm opacity-90;
+  }
+
+  /* ========== SECTIONS ========== */
+
+  .section-title {
+    @apply text-xl md:text-2xl font-bold text-slate-900 mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-sm md:text-base text-slate-600;
+  }
+
+  .section-spacing {
+    @apply mb-8 md:mb-12;
+  }
+
+  .section-header-spacing {
+    @apply mb-4 md:mb-6;
+  }
+
+  /* ========== HERO CONTAINER ========== */
+
+  .hero-container {
+    @apply bg-gradient-to-br from-sky-500 to-sky-700 rounded-2xl p-6 md:p-12 text-white overflow-hidden relative;
+  }
+
+  .hero-circle-top {
+    @apply absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-white/10 rounded-full -mr-24 md:-mr-32 -mt-24 md:-mt-32;
+  }
+
+  .hero-circle-bottom {
+    @apply absolute bottom-0 left-0 w-32 h-32 md:w-48 md:h-48 bg-white/10 rounded-full -ml-16 md:-ml-24 -mb-16 md:-mb-24;
+  }
+
+  /* ========== DASHBOARD ========== */
+
+  .dashboard-container {
+    @apply bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-5 md:p-7 text-white;
+  }
+
+  .dashboard-avatar {
+    @apply w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-xl md:text-2xl font-bold flex-shrink-0;
+  }
+
+  .dashboard-stat-card {
+    @apply bg-white/15 hover:bg-white/25 backdrop-blur rounded-xl p-3 md:p-4 transition-all text-left;
+  }
+
+  /* ========== CAROUSEL ========== */
+
+  .carousel-container {
+    @apply flex gap-4 overflow-x-auto pb-4 -mx-4 px-4;
+  }
+
+  .carousel-item {
+    @apply flex-shrink-0 w-48 md:w-64 bg-white rounded-xl border-2 border-slate-200 overflow-hidden hover:shadow-lg hover:border-sky-300 hover:-translate-y-1 transition-all;
+  }
+
+  .carousel-item-image {
+    @apply aspect-[4/3] overflow-hidden;
+  }
+
+  .carousel-item-content {
+    @apply p-4;
+  }
+
+  /* ========== FEATURE CARDS ========== */
+
+  .feature-card {
+    @apply border-2 rounded-2xl p-5 md:p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all;
+  }
+
+  .feature-card-community {
+    @apply bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200;
+  }
+
+  .feature-card-teams {
+    @apply bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200;
+  }
+
+  .feature-card-rf {
+    @apply bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200;
+  }
+
+  .feature-card-referral {
+    @apply bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200;
+  }
+
+  .feature-card-rewards {
+    @apply bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200;
+  }
+
+  .feature-card-quests {
+    @apply bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200;
+  }
+
+  /* ========== CTA SECTION ========== */
+
+  .cta-container {
+    @apply bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 md:p-12 text-white text-center;
+  }
+
+  /* ========== TOP APP BAR ========== */
+
+  .app-bar {
+    @apply sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm;
+  }
+
+  .app-bar-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6;
+  }
+
+  .app-bar-content {
+    @apply flex items-center justify-between h-16;
+  }
+
+  /* ========== BOTTOM NAV ========== */
+
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 md:hidden;
+  }
+
+  .bottom-nav-content {
+    @apply flex items-center justify-around h-16;
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .bottom-nav-item-active {
+    @apply text-sky-600;
+  }
+
+  .bottom-nav-item-inactive {
+    @apply text-slate-600 hover:text-sky-600 hover:bg-slate-50;
+  }
+
+  /* ========== MODAL ========== */
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl p-6 md:p-8 max-w-md w-full;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .modal-title {
+    @apply text-xl md:text-2xl font-bold text-slate-900;
+  }
+}
+
+/* ========================================
+   UTILITIES LAYER - Утилиты
+   ======================================== */
+
+@layer utilities {
+  /* Text balance */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth scrolling */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Gradient text */
+  .gradient-text-sky {
+    @apply bg-gradient-to-r from-sky-500 to-sky-600 bg-clip-text text-transparent;
+  }
+
+  /* Safe area padding (для PWA) */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
