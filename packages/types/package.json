@@ -1,0 +1,19 @@
+{
+  "name": "@go2asia/types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Auto-generated TypeScript types from OpenAPI specification",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "generate": "orval --config orval.config.ts",
+    "clean": "rm -rf src"
+  },
+  "devDependencies": {
+    "@orval/core": "^7.4.0"
+  }
+}
+
+
+
+

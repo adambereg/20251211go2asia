@@ -1,0 +1,45 @@
+{
+  "name": "go2asia-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Go2Asia v2 - Digital ecosystem for travel, life, and business in Southeast Asia",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "gen:types": "orval --config packages/types/orval.config.ts",
+    "gen:sdk": "orval --config packages/sdk/orval.config.ts",
+    "gen:all": "pnpm gen:types && pnpm gen:sdk",
+    "validate:openapi": "spectral lint docs/openapi/**/*.yaml",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,mdx,css,html,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,mdx,css,html,yml,yaml}\"",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
+    "@orval/core": "^7.4.0",
+    "orval": "^7.4.0",
+    "@stoplight/spectral-cli": "^6.13.0",
+    "@stoplight/spectral-rulesets": "^1.15.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.5",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
+

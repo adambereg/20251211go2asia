@@ -48,6 +48,194 @@ components:
         message:
           type: string
           example: "Invalid or missing token"
+        code:
+          type: string
+          example: "UNAUTHORIZED"
+
+    # Common pagination
+    PaginationParams:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    # User entity (basic)
+    User:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        displayName:
+          type: string
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          type: string
+          enum: [spacer, vip, pro, partner]
+        referralCode:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # Place entity (basic)
+    Place:
+      type: object
+      required:
+        - id
+        - name
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        type:
+          type: string
+          enum: [country, city, place, guide]
+        description:
+          type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+        address:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+
+    # Event entity (basic)
+    Event:
+      type: object
+      required:
+        - id
+        - title
+        - startDate
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        location:
+          $ref: "#/components/schemas/Location"
+        placeId:
+          type: string
+          format: uuid
+          nullable: true
+        category:
+          type: string
+        image:
+          type: string
+          format: uri
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # Post entity (basic)
+    Post:
+      type: object
+      required:
+        - id
+        - content
+        - authorId
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        authorId:
+          type: string
+          format: uuid
+        author:
+          $ref: "#/components/schemas/User"
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        location:
+          $ref: "#/components/schemas/Location"
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
 tags:
   - name: auth

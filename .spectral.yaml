@@ -1,0 +1,12 @@
+extends: ["spectral:oas", "@stoplight/spectral-rulesets"]
+rules:
+  operation-operationId: error
+  operation-tags: error
+  operation-description: warn
+  tag-description: warn
+  info-contact: warn
+  info-description: warn
+
+
+
+
