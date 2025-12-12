@@ -37,11 +37,20 @@ Netlify автоматически создаёт preview-деплои для к
 
 ## 🔐 Настройка Secrets
 
-Необходимо добавить следующие secrets в GitHub репозиторий:
+### Типы Secrets в GitHub Actions
 
-**Settings → Secrets and variables → Actions → New repository secret**
+GitHub Actions поддерживает два типа secrets:
 
-### Cloudflare Secrets (для backend-деплоя)
+1. **Repository secrets** — доступны для всех workflows и environments
+2. **Environment secrets** — доступны только для конкретного environment (имеют приоритет над repository secrets)
+
+**Приоритет:** Environment secrets > Repository secrets
+
+### Вариант 1: Один Cloudflare аккаунт для staging и production (рекомендуется)
+
+Если staging и production используют один Cloudflare аккаунт, добавьте secrets на уровне репозитория:
+
+**Settings → Secrets and variables → Actions → Secrets → New repository secret**
 
 1. **CLOUDFLARE_API_TOKEN**
    - Получить: Cloudflare Dashboard → My Profile → API Tokens → Create Token
@@ -52,8 +61,11 @@ Netlify автоматически создаёт preview-деплои для к
    - Получить: Cloudflare Dashboard → Right sidebar → Account ID
    - Описание: ID аккаунта Cloudflare
 
-3. **CLOUDFLARE_STAGING_ACCOUNT_ID** (опционально, если staging в другом аккаунте)
-   - Описание: ID staging аккаунта Cloudflare
+Эти secrets будут автоматически доступны для обоих environments (staging и production).
+
+### Вариант 2: Разные Cloudflare аккаунты для staging и production
+
+Если staging и production используют разные Cloudflare аккаунты, добавьте secrets в соответствующие environments (см. раздел "Настройка Environments" ниже).
 
 ### Database Secrets (для миграций)
 
@@ -73,25 +85,29 @@ Netlify автоматически создаёт preview-деплои для к
 
 1. Перейти в **Settings → Environments**
 2. Создать environment `staging`
-3. Добавить secrets:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
-   - `DATABASE_URL_STAGING`
+3. Добавить secrets (если используете Вариант 2 — разные аккаунты):
+   - `CLOUDFLARE_API_TOKEN` (если отличается от repository secret)
+   - `CLOUDFLARE_ACCOUNT_ID` (если отличается от repository secret)
+   - `DATABASE_URL_STAGING` (обязательно, так как отличается от production)
 4. Настроить protection rules (опционально):
    - Required reviewers
    - Wait timer
 
+**Примечание:** Если Cloudflare secrets добавлены как repository secrets, они автоматически доступны в этом environment. Добавляйте их в environment только если нужны другие значения.
+
 ### Production Environment
 
 1. Создать environment `production`
-2. Добавить secrets:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
-   - `DATABASE_URL_PRODUCTION`
+2. Добавить secrets (если используете Вариант 2 — разные аккаунты):
+   - `CLOUDFLARE_API_TOKEN` (если отличается от repository secret)
+   - `CLOUDFLARE_ACCOUNT_ID` (если отличается от repository secret)
+   - `DATABASE_URL_PRODUCTION` (обязательно, так как отличается от staging)
 3. Обязательно настроить protection rules:
    - ✅ Required reviewers (минимум 1)
    - ⏱️ Wait timer (рекомендуется 5 минут)
    - 🔒 Deployment branches: только `main`
+
+**Примечание:** Если Cloudflare secrets добавлены как repository secrets, они автоматически доступны в этом environment. Добавляйте их в environment только если нужны другие значения.
 
 ---
 
