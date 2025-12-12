@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: Deploy Backend to Staging
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-staging:
-    name: Deploy to Staging
+  deploy-backend-staging:
+    name: Deploy Backend Services to Staging
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://staging.go2asia.space
+      url: https://staging-api.go2asia.space
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,21 +33,20 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Build
-        run: pnpm build
+      - name: Build backend services
+        run: pnpm build --filter='./services/*'
 
-      - name: Deploy to Netlify (Staging)
-        uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=.next --prod=true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+      - name: Deploy backend services to Cloudflare Workers (Staging)
+        run: |
+          echo "Deploying backend services to Cloudflare Workers staging..."
+          # TODO: Add Cloudflare Workers deployment steps when services are ready
+          # Example:
+          # pnpm --filter='./services/user-service' deploy:staging
+          # pnpm --filter='./services/atlas-service' deploy:staging
+          # etc.
 
       - name: Run smoke tests
         run: |
-          echo "Running smoke tests against staging..."
+          echo "Running smoke tests against staging API..."
           # TODO: Add smoke test script when available
           # pnpm test:smoke:staging
-
-

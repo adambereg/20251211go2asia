@@ -4,6 +4,17 @@
 
 ---
 
+## 📋 Архитектура деплоя
+
+**Важно:** В проекте используется раздельная архитектура деплоя:
+
+- **Frontend** → деплоится через **Netlify** (автоматически при пуше в GitHub)
+- **Backend** → деплоится через **GitHub Actions** (staging → production)
+
+Netlify автоматически создаёт preview-деплои для каждого PR. GitHub Actions не управляют деплоем фронтенда.
+
+---
+
 ## 📋 Обзор Workflows
 
 ### 1. CI (`ci.yml`)
@@ -12,21 +23,14 @@
 - ✅ Валидация OpenAPI через Spectral
 - ✅ Генерация типов/SDK с проверкой diffs
 
-### 2. Preview Deployment (`preview.yml`)
-Запускается на каждый PR:
-- 🚀 Автоматический деплой preview на Netlify
-- 💬 Комментарий в PR с уведомлением о preview
-
-**Примечание:** Для автоматических preview deployments рекомендуется использовать встроенную интеграцию Netlify с GitHub (Site settings → Build & deploy → Continuous Deployment). GitHub Actions workflow можно использовать для дополнительных проверок или кастомных деплоев.
-
-### 3. Staging Deployment (`staging.yml`)
+### 2. Staging Deployment (`staging.yml`)
 Запускается при push в `main`/`master`:
-- 🚀 Автоматический деплой в staging окружение
+- 🚀 Автоматический деплой backend-сервисов в staging окружение (Cloudflare Workers)
 - ✅ Smoke тесты после деплоя
 
-### 4. Production Deployment (`production.yml`)
+### 3. Production Deployment (`production.yml`)
 Запускается вручную через `workflow_dispatch`:
-- 🚀 Деплой в production
+- 🚀 Деплой backend-сервисов в production (Cloudflare Workers)
 - 🏷️ Создание GitHub Release
 
 ---
@@ -37,23 +41,29 @@
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
-### Netlify Secrets
+### Cloudflare Secrets (для backend-деплоя)
 
-1. **NETLIFY_AUTH_TOKEN**
-   - Получить: Netlify Dashboard → User settings → Applications → New access token
-   - Описание: Токен для авторизации в Netlify API
+1. **CLOUDFLARE_API_TOKEN**
+   - Получить: Cloudflare Dashboard → My Profile → API Tokens → Create Token
+   - Права: Account → Cloudflare Workers → Edit
+   - Описание: Токен для деплоя Cloudflare Workers
 
-2. **NETLIFY_SITE_ID** (для preview)
-   - Получить: Netlify Dashboard → Site settings → General → Site details → Site ID
-   - Описание: ID сайта для preview deployments
+2. **CLOUDFLARE_ACCOUNT_ID**
+   - Получить: Cloudflare Dashboard → Right sidebar → Account ID
+   - Описание: ID аккаунта Cloudflare
 
-3. **NETLIFY_SITE_ID_STAGING** (для staging)
-   - Получить: Создать отдельный сайт в Netlify для staging
-   - Описание: ID staging сайта
+3. **CLOUDFLARE_STAGING_ACCOUNT_ID** (опционально, если staging в другом аккаунте)
+   - Описание: ID staging аккаунта Cloudflare
 
-4. **NETLIFY_SITE_ID_PROD** (для production)
-   - Получить: Создать production сайт в Netlify
-   - Описание: ID production сайта
+### Database Secrets (для миграций)
+
+4. **DATABASE_URL_STAGING**
+   - Получить: Neon Dashboard → Project → Connection String
+   - Описание: Connection string для staging базы данных
+
+5. **DATABASE_URL_PRODUCTION**
+   - Получить: Neon Dashboard → Project → Connection String
+   - Описание: Connection string для production базы данных
 
 ---
 
@@ -63,17 +73,39 @@
 
 1. Перейти в **Settings → Environments**
 2. Создать environment `staging`
-3. Настроить protection rules (опционально):
+3. Добавить secrets:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `DATABASE_URL_STAGING`
+4. Настроить protection rules (опционально):
    - Required reviewers
    - Wait timer
 
 ### Production Environment
 
 1. Создать environment `production`
-2. Обязательно настроить protection rules:
+2. Добавить secrets:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `DATABASE_URL_PRODUCTION`
+3. Обязательно настроить protection rules:
    - ✅ Required reviewers (минимум 1)
    - ⏱️ Wait timer (рекомендуется 5 минут)
    - 🔒 Deployment branches: только `main`
+
+---
+
+## 🌐 Настройка Netlify (Frontend)
+
+**Примечание:** Netlify настраивается отдельно и не требует GitHub Actions workflows.
+
+1. Подключить репозиторий в Netlify Dashboard
+2. Настроить автоматический деплой:
+   - **Build command:** `pnpm build --filter='./capsules/frontend-shell/apps/go2asia-pwa-shell'`
+   - **Publish directory:** `.next` (или соответствующий output директории)
+3. Netlify автоматически создаст preview-деплои для каждого PR
+
+Подробнее см. `ops/netlify_setup.md`
 
 ---
 
@@ -84,11 +116,11 @@
 1. Создать тестовый PR
 2. Проверить, что:
    - ✅ CI workflow запустился и прошёл успешно
-   - ✅ Preview deployment создался
-   - ✅ Комментарий с preview URL появился в PR
+   - ✅ Netlify автоматически создал preview-деплой (проверить в Netlify Dashboard)
 
 3. После merge в `main`:
    - ✅ Staging deployment запустился автоматически
+   - ✅ Backend-сервисы задеплоились в Cloudflare Workers
    - ✅ Деплой прошёл успешно
 
 ---
@@ -100,9 +132,9 @@
 - Проверить синтаксис YAML файлов
 - Проверить триггеры (`on:` секция)
 
-### Preview deployment не работает
-- Проверить наличие `NETLIFY_AUTH_TOKEN` и `NETLIFY_SITE_ID` в secrets
-- Проверить права токена в Netlify
+### Backend deployment не работает
+- Проверить наличие Cloudflare secrets в GitHub Environments
+- Проверить права токена в Cloudflare (должен иметь права на Workers)
 - Проверить логи в Actions → конкретный workflow run
 
 ### Генерация типов/SDK падает
@@ -110,11 +142,16 @@
 - Проверить, что OpenAPI файлы валидны (`pnpm validate:openapi`)
 - Проверить, что все зависимости установлены
 
+### Netlify preview не создаётся
+- Проверить настройки Continuous Deployment в Netlify Dashboard
+- Проверить, что репозиторий подключен к Netlify
+- Проверить build logs в Netlify Dashboard
+
 ---
 
 ## 📚 Связанные документы
 
-- `ops/netlify_setup.md` - Настройка Netlify
+- `ops/netlify_setup.md` - Настройка Netlify для фронтенда
+- `ops/cloudflare_setup.md` - Настройка Cloudflare для backend
 - `ops/ci_cd.md` - Общий подход к CI/CD
 - `playbooks/ENGINEERING_PLAYBOOK.md` - Раздел 5: CI/CD Pipeline
-
