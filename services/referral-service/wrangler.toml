@@ -1,0 +1,17 @@
+name = "go2asia-referral-service-staging"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.staging]
+name = "go2asia-referral-service-staging"
+vars = { ENVIRONMENT = "staging" }
+
+[env.production]
+name = "go2asia-referral-service"
+vars = { ENVIRONMENT = "production" }
+
+# Routes (will be configured via Cloudflare Dashboard)
+# routes = [
+#   { pattern = "referral.go2asia.space/*", zone_name = "go2asia.space" }
+# ]
+

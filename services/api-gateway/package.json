@@ -1,0 +1,24 @@
+{
+  "name": "@go2asia/api-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "API Gateway for Go2Asia - routes requests to backend microservices",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy --env production",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@go2asia/logger": "workspace:*",
+    "@go2asia/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.78.0"
+  }
+}
+
