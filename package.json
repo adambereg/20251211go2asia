@@ -21,6 +21,8 @@
     "validate:openapi": "spectral lint docs/openapi/**/*.yaml",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,mdx,css,html,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,mdx,css,html,yml,yaml}\"",
+    "deploy:staging": "turbo run deploy:staging --filter='./services/*'",
+    "deploy:prod": "turbo run deploy:prod --filter='./services/*'",
     "prepare": "husky install"
   },
   "devDependencies": {
