@@ -75,7 +75,7 @@
   - [x] `admin` - администратор (полный доступ)
 - [x] **Назначена роль `admin` в Public metadata** для пользователя `siberialife2021@gmail.com`
 - [x] **Настроен Customize Session Token** с claims editor (`role: "{{user.public_metadata.role || 'spacer'}}"`)
-- [ ] **Проверено, что роль доступна в `sessionClaims.role`** (требует тестирования через API endpoint)
+- [ ] **Проверено, что роль доступна в `sessionClaims.role`** (см. `docs/ops/test_role_setup.md` для инструкций)
 
 - [ ] **Метаданные пользователя определены**
   - [x] Структура `publicMetadata.role` определена (хранится роль пользователя)
