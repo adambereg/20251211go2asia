@@ -5,9 +5,11 @@
 
 export interface Env {
   ENVIRONMENT: string;
-  // Add Clerk webhook secret and other env vars as needed
-  // CLERK_WEBHOOK_SECRET?: string;
-  // DATABASE_URL?: string;
+  // Clerk configuration (to be added via Cloudflare Dashboard)
+  CLERK_SECRET_KEY?: string; // Backend API Secret Key
+  CLERK_WEBHOOK_SECRET?: string; // Webhook Signing Secret
+  // Database (to be added when database is set up)
+  DATABASE_URL?: string;
 }
 
 export default {
