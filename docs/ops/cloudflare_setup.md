@@ -24,10 +24,11 @@ Cloudflare стоит между пользователями и инфраст�
 
 Через Cloudflare проходят:
 
-- основной домен `go2asia.app`,
+- основной домен `go2asia.space`,
 - production, staging и preview-деплои фронтенда,
-- API-трафик (если используется Cloudflare Worker Gateway),
+- API-трафик через Cloudflare Workers (API Gateway и микросервисы),
 - статические ресурсы,
+- медиа-контент через Cloudflare R2,
 - аналитика трафика и угроз.
 
 ---
@@ -38,10 +39,11 @@ Cloudflare стоит между пользователями и инфраст�
 
 - Все DNS-записи **должны** быть управляемы только через Cloudflare.
 - Включён **orange cloud** (проксирование) для:
-  - `go2asia.app`,
-  - `www.go2asia.app`,
-  - `api.go2asia.app` (если используется),
-  - `staging.go2asia.app`.
+  - `go2asia.space`,
+  - `www.go2asia.space`,
+  - `api.go2asia.space`,
+  - `staging.go2asia.space`,
+  - `staging-api.go2asia.space`.
 
 Это обеспечивает:
 - WAF,
@@ -53,10 +55,11 @@ Cloudflare стоит между пользователями и инфраст�
 
 | Поддомен | Тип | Значение | Proxy | Назначение |
 |---------|-----|----------|--------|------------|
-| go2asia.app | CNAME | `project-name.netlify.app` | 🟧 | прод-фронтенд |
-| www.go2asia.app | CNAME | `go2asia.app` | 🟧 | редирект на основной домен |
-| staging.go2asia.app | CNAME | staging‑…netlify.app | 🟧 | staging окружение |
-| api.go2asia.app | CNAME / A | API Gateway | 🟧 | будущий API-шлюз |
+| go2asia.space | CNAME | `go2asia-pwa-shell.netlify.app` | 🟧 | прод-фронтенд |
+| www.go2asia.space | CNAME | `go2asia.space` | 🟧 | редирект на основной домен |
+| staging.go2asia.space | CNAME | `staging-go2asia-pwa-shell.netlify.app` | 🟧 | staging фронтенд |
+| api.go2asia.space | CNAME | `go2asia-api-gateway.workers.dev` | 🟧 | production API Gateway |
+| staging-api.go2asia.space | CNAME | `go2asia-api-gateway-staging.workers.dev` | 🟧 | staging API Gateway |
 
 ---
 
@@ -121,16 +124,16 @@ Cloudflare может значительно ускорить загрузку G
 
 ## Пример правил:
 
-1. `*go2asia.app/_next/static/*`  
+1. `*go2asia.space/_next/static/*`  
    Cache Level: Cache Everything  
    Edge TTL: 1 месяц  
 
-2. `*go2asia.app/api/*`  
+2. `*go2asia.space/api/*`  
    Cache Level: Bypass  
    Security Level: High  
 
-3. `www.go2asia.app/*`  
-   Forwarding URL → https://go2asia.app/$1
+3. `www.go2asia.space/*`  
+   Forwarding URL → https://go2asia.space/$1
 
 ---
 
@@ -306,6 +309,228 @@ Cloudflare предоставляет:
   - Bucket: `go2asia-media`
   - Типовые префиксы: `country/`, `city/`, `place/`
   - Используется для хранения медиа-контента (страны, города, места и т.п.).
+
+---
+
+## 14. Cloudflare R2 для медиа-контента
+
+Cloudflare R2 используется для хранения медиа-файлов (изображения стран, городов, мест, событий, пользовательские аватары и т.д.).
+
+### 14.1. Настройка R2 Bucket
+
+**Существующий bucket:** `go2asia-media`
+
+Если нужно создать новый bucket:
+
+1. Перейти в **Cloudflare Dashboard → R2 → Create bucket**
+2. Имя: `go2asia-media`
+3. Location: выбрать ближайший регион (рекомендуется EU для РФ-аудитории)
+4. Public access: настроить через Custom Domain или Public URL (см. ниже)
+
+### 14.2. Структура хранения
+
+Рекомендуемая структура префиксов:
+
+```
+go2asia-media/
+├── country/          # Изображения стран
+│   ├── {country-id}/
+│   │   ├── flag.png
+│   │   ├── banner.jpg
+│   │   └── gallery/
+├── city/             # Изображения городов
+│   ├── {city-id}/
+│   │   ├── banner.jpg
+│   │   └── gallery/
+├── place/            # Изображения мест
+│   ├── {place-id}/
+│   │   ├── cover.jpg
+│   │   └── gallery/
+├── event/            # Изображения событий
+│   ├── {event-id}/
+│   │   └── poster.jpg
+├── user/             # Пользовательские файлы
+│   ├── avatar/
+│   └── uploads/
+└── blog/             # Медиа для блога
+    └── {article-slug}/
+```
+
+### 14.3. Публичный доступ через Custom Domain
+
+Для публичного доступа к медиа через `media.go2asia.space`:
+
+1. **Создать Custom Domain в R2:**
+   - R2 → `go2asia-media` → Settings → Custom Domain
+   - Добавить домен: `media.go2asia.space`
+
+2. **Настроить DNS:**
+   - Добавить CNAME запись в Cloudflare DNS:
+     - Имя: `media`
+     - Цель: R2 Custom Domain (будет показана в настройках R2)
+     - Proxy: 🟧 (включено)
+
+3. **Настроить CORS (если нужен доступ из браузера):**
+   ```json
+   [
+     {
+       "AllowedOrigins": ["https://go2asia.space", "https://staging.go2asia.space"],
+       "AllowedMethods": ["GET", "HEAD"],
+       "AllowedHeaders": ["*"],
+       "MaxAgeSeconds": 3600
+     }
+   ]
+   ```
+
+### 14.4. Использование в коде
+
+**Пример загрузки файла в R2 через Worker:**
+
+```typescript
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+
+const R2_ACCOUNT_ID = env.CLOUDFLARE_ACCOUNT_ID;
+const R2_ACCESS_KEY_ID = env.R2_ACCESS_KEY_ID;
+const R2_SECRET_ACCESS_KEY = env.R2_SECRET_ACCESS_KEY;
+const R2_BUCKET = 'go2asia-media';
+
+const s3Client = new S3Client({
+  region: 'auto',
+  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: R2_ACCESS_KEY_ID,
+    secretAccessKey: R2_SECRET_ACCESS_KEY,
+  },
+});
+
+// Загрузка файла
+await s3Client.send(
+  new PutObjectCommand({
+    Bucket: R2_BUCKET,
+    Key: `place/${placeId}/cover.jpg`,
+    Body: fileBuffer,
+    ContentType: 'image/jpeg',
+  })
+);
+```
+
+**Публичный URL:**
+```
+https://media.go2asia.space/place/{placeId}/cover.jpg
+```
+
+### 14.5. R2 Secrets для GitHub Actions
+
+Добавить в GitHub Secrets (если нужен доступ из CI/CD):
+
+- `R2_ACCESS_KEY_ID` - Access Key ID из Cloudflare R2
+- `R2_SECRET_ACCESS_KEY` - Secret Access Key из Cloudflare R2
+
+**Получить:**
+- Cloudflare Dashboard → R2 → Manage R2 API Tokens → Create API Token
+
+---
+
+## 15. Инициализация Cloudflare Workers
+
+### 15.1. Структура Workers в проекте
+
+Workers создаются как отдельные сервисы в монорепо:
+
+```
+services/
+├── api-gateway/          # API Gateway Worker
+├── auth-service/         # Auth Service Worker
+├── content-service/     # Content Service Worker
+├── referral-service/    # Referral Service Worker
+├── token-service/       # Token Service Worker
+└── ...
+```
+
+### 15.2. Создание нового Worker (шаблон)
+
+Для создания нового Worker используйте Wrangler CLI:
+
+```bash
+# Установка Wrangler (если еще не установлен)
+pnpm add -D wrangler
+
+# Создание нового Worker
+cd services/new-service
+npx wrangler init
+```
+
+**Базовая структура `wrangler.toml`:**
+
+```toml
+name = "go2asia-new-service-staging"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "go2asia-new-service"
+
+[env.staging]
+name = "go2asia-new-service-staging"
+
+# Переменные окружения
+[vars]
+ENVIRONMENT = "staging"
+
+# Secrets (устанавливаются через wrangler secret put)
+# CLOUDFLARE_ACCOUNT_ID - из GitHub Secrets
+# DATABASE_URL - из GitHub Secrets
+
+# R2 bindings (если нужен доступ к R2)
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "go2asia-media"
+```
+
+**Минимальный `src/index.ts`:**
+
+```typescript
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    return new Response('Hello from Go2Asia Service!', {
+      headers: { 'content-type': 'text/plain' },
+    });
+  },
+};
+
+interface Env {
+  ENVIRONMENT: string;
+  // Добавить другие переменные окружения
+}
+```
+
+### 15.3. Деплой Worker
+
+**Локальный деплой (для тестирования):**
+```bash
+npx wrangler deploy --env staging
+```
+
+**Деплой через GitHub Actions:**
+Workers деплоятся автоматически через GitHub Actions workflows (см. `.github/workflows/staging.yml` и `production.yml`).
+
+### 15.4. Список существующих Workers
+
+**Staging:**
+- `go2asia-api-gateway-staging`
+- `go2asia-auth-service-staging`
+- `go2asia-content-service-staging`
+- `go2asia-referral-service-staging`
+- `go2asia-token-service-staging`
+
+**Production:**
+- `go2asia-api-gateway`
+- `go2asia-auth-service`
+- `go2asia-content-service`
+- `go2asia-referral-service`
+- `go2asia-token-service`
+
+**Важно:** При создании нового сервиса используйте существующие имена или создавайте новые только после согласования в ADR.
 
 ### 13.2. Правила для разработки и CI/CD
 
