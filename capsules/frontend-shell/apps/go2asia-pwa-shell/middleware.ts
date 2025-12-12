@@ -72,17 +72,19 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Проверка прав доступа для админских маршрутов
+  // Роль доступна в sessionClaims.role благодаря Customize Session Token
   if (isAdminRoute(req)) {
-    const role = (sessionClaims as any)?.publicMetadata?.role as string | undefined;
+    const role = (sessionClaims?.role as string) || 'spacer';
     if (role !== 'admin') {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }
 
   // Проверка прав доступа для PRO маршрутов
+  // Роль доступна в sessionClaims.role благодаря Customize Session Token
   if (isPRORoute(req)) {
-    const role = (sessionClaims as any)?.publicMetadata?.role as string | undefined;
-    if (role !== 'pro' && role !== 'admin') {
+    const role = (sessionClaims?.role as string) || 'spacer';
+    if (role !== 'pro-curator' && role !== 'admin') {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }
