@@ -115,9 +115,24 @@ pnpm deploy:staging
 
 ---
 
-## Проверка деплоя
+## ✅ Проверка деплоя
 
 После успешного деплоя проверьте health check endpoints:
+
+### Автоматическая проверка (скрипт)
+
+Используйте скрипт для проверки всех сервисов:
+
+```bash
+# Linux/Mac
+chmod +x scripts/check-health.sh
+./scripts/check-health.sh
+
+# Windows (PowerShell)
+# Используйте curl команды ниже или Git Bash
+```
+
+### Ручная проверка
 
 ### Workers.dev URLs (для тестирования):
 
