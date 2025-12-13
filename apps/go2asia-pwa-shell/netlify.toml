@@ -1,0 +1,187 @@
+# Netlify Configuration для Go2Asia PWA Shell
+# 
+# ВАЖНО: Это шаблон конфигурации для Phase 0.7.
+# Реальный деплой на Netlify будет выполнен ПОСЛЕ завершения Phase 0.
+#
+# Документация: docs/ops/phase0_7_plan.md
+
+[build]
+  # Команда сборки для монорепо
+  # Используется pnpm workspace, поэтому сборка из корня репозитория
+  command = "cd apps/go2asia-pwa-shell && pnpm install --frozen-lockfile && pnpm build"
+  
+  # Publish directory для Next.js 15 App Router
+  # Next.js собирает приложение в .next/
+  publish = "apps/go2asia-pwa-shell/.next"
+
+[[plugins]]
+  # Официальный плагин Netlify для Next.js
+  # Обеспечивает правильную работу Next.js App Router, API Routes и Server Components
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  # Версии Node.js и pnpm для сборки
+  NODE_VERSION = "20"
+  PNPM_VERSION = "8"
+  
+  # Переменные окружения для build (не секреты)
+  # Реальные секреты настраиваются в Netlify Dashboard → Environment variables
+  # NEXT_PUBLIC_API_URL будет переопределена в context-specific секциях
+  # NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY настраивается в Netlify Dashboard
+  # CLERK_SECRET_KEY настраивается в Netlify Dashboard
+
+# ============================================================================
+# Security Headers
+# ============================================================================
+
+# Базовые security headers для всех страниц
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # X-Content-Type-Options: предотвращает MIME-sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # X-Frame-Options: предотвращает clickjacking
+    X-Frame-Options = "DENY"
+    
+    # X-XSS-Protection: базовая защита от XSS (legacy, но полезно)
+    X-XSS-Protection = "1; mode=block"
+    
+    # Referrer-Policy: контроль передачи referrer
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy: ограничение доступа к API браузера
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
+
+# HSTS (HTTP Strict Transport Security) - ТОЛЬКО для production
+# Включается через Cloudflare, не через Netlify headers
+# См. docs/ops/phase0_7_plan.md для деталей
+
+# Content Security Policy (CSP)
+# Настраивается в next.config.js, но может быть переопределена здесь
+# ВАЖНО: CSP будет дорабатываться после тестирования в staging
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Черновая версия CSP для production
+    # Будет оптимизирована после тестирования
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.clerk.com https://api.go2asia.space https://*.go2asia.space; frame-src 'self' https://*.clerk.com;"
+
+# ============================================================================
+# Cache Headers
+# ============================================================================
+
+# HTML страницы - не кешируем (всегда свежие)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Статические ассеты Next.js - долгое кеширование (версионированы через hash)
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Изображения - кешируем на 1 день
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# PWA Manifest - кешируем на 1 час
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Service Worker - не кешируем (всегда свежий)
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ============================================================================
+# Deploy Contexts (окружения)
+# ============================================================================
+
+# Production деплой (ветка main)
+[context.production]
+  command = "cd apps/go2asia-pwa-shell && pnpm install --frozen-lockfile && pnpm build"
+  publish = "apps/go2asia-pwa-shell/.next"
+  
+  [context.production.environment]
+    # Production API URL
+    # Реальное значение настраивается в Netlify Dashboard
+    NEXT_PUBLIC_API_URL = "https://api.go2asia.space"
+    
+    # Production App URL
+    NEXT_PUBLIC_APP_URL = "https://go2asia.app"
+    
+    # NODE_ENV для Next.js
+    NODE_ENV = "production"
+
+# Staging деплой (ветка develop)
+[context.staging]
+  command = "cd apps/go2asia-pwa-shell && pnpm install --frozen-lockfile && pnpm build"
+  publish = "apps/go2asia-pwa-shell/.next"
+  
+  [context.staging.environment]
+    # Staging API URL
+    NEXT_PUBLIC_API_URL = "https://api-staging.go2asia.space"
+    
+    # Staging App URL
+    NEXT_PUBLIC_APP_URL = "https://staging.go2asia.app"
+    
+    # NODE_ENV для Next.js (production mode для оптимизаций)
+    NODE_ENV = "production"
+
+# Deploy Preview (Pull Requests)
+[context.deploy-preview]
+  command = "cd apps/go2asia-pwa-shell && pnpm install --frozen-lockfile && pnpm build"
+  publish = "apps/go2asia-pwa-shell/.next"
+  
+  [context.deploy-preview.environment]
+    # Preview использует staging API
+    NEXT_PUBLIC_API_URL = "https://api-staging.go2asia.space"
+    
+    # NODE_ENV для Next.js
+    NODE_ENV = "production"
+
+# Branch Deploys (другие ветки, опционально)
+[context.branch-deploy]
+  command = "cd apps/go2asia-pwa-shell && pnpm install --frozen-lockfile && pnpm build"
+  publish = "apps/go2asia-pwa-shell/.next"
+  
+  [context.branch-deploy.environment]
+    # Branch deploys используют staging API
+    NEXT_PUBLIC_API_URL = "https://api-staging.go2asia.space"
+    
+    NODE_ENV = "production"
+
+# ============================================================================
+# Redirects (опционально)
+# ============================================================================
+
+# Редирект www на основной домен (настраивается через Cloudflare, но можно и здесь)
+# /www.go2asia.app/*  https://go2asia.app/:splat  301!
+
+# ============================================================================
+# Примечания
+# ============================================================================
+
+# 1. Переменные окружения с секретами (CLERK_SECRET_KEY, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
+#    настраиваются в Netlify Dashboard → Site settings → Environment variables
+#    и НЕ должны быть в этом файле
+#
+# 2. CSP (Content Security Policy) будет дорабатываться после тестирования в staging
+#    Текущая версия - черновая, может потребовать корректировок
+#
+# 3. HSTS настраивается через Cloudflare, не через Netlify headers
+#    См. docs/ops/cloudflare_setup.md
+#
+# 4. Для реального деплоя необходимо:
+#    - Подключить репозиторий в Netlify Dashboard
+#    - Настроить переменные окружения
+#    - Настроить DNS в Cloudflare
+#    См. docs/ops/phase0_7_checklist.md
